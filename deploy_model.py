@@ -1,5 +1,6 @@
 from typing import Union, Optional
 from model_code.LogisiticRegression import LRModel
+from model_code.SVC import SVCModel
 from pydantic import BaseModel 
 from fastapi import (
     FastAPI
@@ -52,10 +53,20 @@ class NetworkItem(BaseModel):
 app = FastAPI()
 # Logistic Regression Model
 obj_lr = LRModel()
-obj_lr.train() # This model is trained only once, so no time is consumed.
+result = obj_lr.train() # This model is trained only once, so no time is consumed.
+with open('op.txt', 'w') as f:
+    f.write('Logistic Regression\n')
+    f.write(str(result))
+# SVC 
+obj_svc = SVCModel()
+result = obj_svc.train() # This model is trained only once, so no time is consumed.
+with open('op.txt', 'a') as f:
+    f.write('SVC\n')
+    f.write(str(result))
 
 @app.post("/predict")
 def predict(NetworkItem: Union[NetworkItem, None]):
     res = {}
     res['Logistic Reg. attack_type'] = obj_lr.predict(NetworkItem)
+    res['SVC attack_type'] = obj_svc.predict(NetworkItem)
     return res

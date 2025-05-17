@@ -18,6 +18,6 @@ Alternatively you can use **Postman** or **Swagger API** assoicated with **FastA
 #### ✅ Expected Response
 The server will process the input and return a prediction or classification result based on the deployed model. The above curl command will return. 
 
-`{"Logistic Reg. attack_type":["neptune"]}`
+`{"Logistic Reg. attack_type":["neptune"],"SVC attack_type":["neptune"]}`
 
-The key is the model name and the value is the attack type.
+The key is the model name and the value is the attack type that's predicted by the model. Currently I have two models **Logistic Regression** and **SVC**.
