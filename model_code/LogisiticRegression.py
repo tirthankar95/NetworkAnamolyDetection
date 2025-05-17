@@ -63,21 +63,25 @@ class LRModel(BaseModel):
         return {"cv_report": cv_report, "test_report": test_report}
     
     def predict(self, nw_data):
+        nw_data = nw_data.dict()
         if nw_data is None:
-            return {'No data to make prediction.'}
+            return ['No data to make prediction.']
         if not Path(self.helper_dir / "lr.pkl").exists():
-            return {'Model not ready yet.'}
+            return ['Model not ready yet.']
         with open(self.helper_dir / "lr.pkl", "rb") as f:
             self.model = pickle.load(f)
         X_test = {}
         # Re-arrange the data. 
-        for cols in self.data['X_tr'].columns:
-            if cols not in nw_data or \
-            (not self.is_numeric(nw_data) and \
-             nw_data[cols] not in self.mapping[cols]):
+        features = self.data['X_tr'].columns
+        for cols, val in nw_data.items():
+            if cols not in features:
+                print(f'{cols}: bad column')
+            if cols not in features or \
+            (not self.is_numeric(val) and \
+             cols not in self.mapping[cols]):
                 X_test[cols] = [self.default_values[cols]]
             else:
-                X_test[cols] = [nw_data[cols]]
+                X_test[cols] = [val]
         X_test = pd.DataFrame(X_test)
         orig_columns = X_test.columns
         X_test = self.scaler.transform(X_test)
